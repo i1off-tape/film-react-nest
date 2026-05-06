@@ -1,4 +1,10 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { FilmsService } from './films.service';
 import { FilmsResponseDto, FilmScheduleResponseDto } from './dto/films.dto';
 
@@ -12,7 +18,15 @@ export class FilmsController {
   }
 
   @Get(':id/schedule')
-  findScheduleById(@Param('id') id: string): Promise<FilmScheduleResponseDto> {
+  findScheduleById(
+    @Param(
+      'id',
+      new ParseUUIDPipe({
+        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+      }),
+    )
+    id: string,
+  ): Promise<FilmScheduleResponseDto> {
     return this.filmsService.findScheduleById(id);
   }
 }
