@@ -2,6 +2,7 @@ import {
   IsArray,
   IsInt,
   IsNumber,
+  IsOptional,
   IsPositive,
   IsString,
   IsUUID,
@@ -16,14 +17,17 @@ export class TicketDto {
   @IsUUID()
   session: string;
 
+  @IsOptional()
   @IsString()
-  daytime: string;
+  daytime?: string;
 
+  @IsOptional()
   @IsString()
-  day: string;
+  day?: string;
 
+  @IsOptional()
   @IsString()
-  time: string;
+  time?: string;
 
   @IsInt()
   @IsPositive()
@@ -33,9 +37,10 @@ export class TicketDto {
   @IsPositive()
   seat: number;
 
+  @IsOptional()
   @IsInt()
   @IsPositive()
-  price: number;
+  price?: number;
 }
 
 export class CreateOrderDto {
