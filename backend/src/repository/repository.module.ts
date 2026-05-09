@@ -1,19 +1,28 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { FilmEntity, FilmSchema } from '../films/schemas/film.schema';
-import { MongoFilmsRepository } from './mongo-films.repository';
+import { Film } from '../films/entities/film.entity';
+import { Schedule } from '../films/entities/schedule.entity';
+import { AppRepository } from './app.repository';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      {
-        name: FilmEntity.name,
-        schema: FilmSchema,
-      },
-    ]),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        url: configService.getOrThrow<string>('DATABASE_URL'),
+        username: configService.getOrThrow<string>('DATABASE_USERNAME'),
+        password: configService.getOrThrow<string>('DATABASE_PASSWORD'),
+        entities: [Film, Schedule],
+        synchronize: false,
+      }),
+    }),
+    TypeOrmModule.forFeature([Film, Schedule]),
   ],
-  providers: [MongoFilmsRepository],
-  exports: [MongoFilmsRepository],
+  providers: [AppRepository],
+  exports: [AppRepository],
 })
 export class RepositoryModule {}

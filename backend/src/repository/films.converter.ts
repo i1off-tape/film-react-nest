@@ -1,12 +1,13 @@
 import { FilmDto, FilmScheduleDto } from '../films/dto/films.dto';
-import { FilmEntity, FilmScheduleEntity } from '../films/schemas/film.schema';
+import { Film } from '../films/entities/film.entity';
+import { Schedule } from '../films/entities/schedule.entity';
 
-export function filmEntityToDto(film: FilmEntity): FilmDto {
+export function filmEntityToDto(film: Film): FilmDto {
   return {
     id: film.id,
     rating: film.rating,
     director: film.director,
-    tags: film.tags,
+    tags: film.tags ? [film.tags] : [],
     image: film.image,
     cover: film.cover,
     title: film.title,
@@ -15,9 +16,7 @@ export function filmEntityToDto(film: FilmEntity): FilmDto {
   };
 }
 
-export function filmScheduleEntityToDto(
-  schedule: FilmScheduleEntity,
-): FilmScheduleDto {
+export function scheduleEntityToDto(schedule: Schedule): FilmScheduleDto {
   return {
     id: schedule.id,
     daytime: schedule.daytime,
@@ -25,6 +24,6 @@ export function filmScheduleEntityToDto(
     rows: schedule.rows,
     seats: schedule.seats,
     price: schedule.price,
-    taken: schedule.taken,
+    taken: schedule.taken ? schedule.taken.split(',').filter(Boolean) : [],
   };
 }
