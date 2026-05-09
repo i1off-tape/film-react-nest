@@ -1,8 +1,8 @@
-import { Column, Entity, PrimaryColumn, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Schedule } from './schedule.entity';
 @Entity({ name: 'films' })
 export class Film {
-  @PrimaryColumn('uuid')
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
