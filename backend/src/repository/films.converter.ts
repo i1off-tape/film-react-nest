@@ -7,7 +7,7 @@ export function filmEntityToDto(film: Film): FilmDto {
     id: film.id,
     rating: film.rating,
     director: film.director,
-    tags: film.tags ? [film.tags] : [],
+    tags: film.tags,
     image: film.image,
     cover: film.cover,
     title: film.title,
@@ -24,6 +24,6 @@ export function scheduleEntityToDto(schedule: Schedule): FilmScheduleDto {
     rows: schedule.rows,
     seats: schedule.seats,
     price: schedule.price,
-    taken: schedule.taken ? schedule.taken.split(',').filter(Boolean) : [],
+    taken: schedule.taken,
   };
 }

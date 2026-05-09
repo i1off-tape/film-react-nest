@@ -5,28 +5,28 @@ export class Film {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'real', default: 0 })
   rating: number;
 
-  @Column()
+  @Column({ type: 'varchar', default: '' })
   director: string;
 
-  @Column('text')
-  tags: string;
+  @Column({ type: 'varchar', array: true, default: [] })
+  tags: string[];
 
-  @Column()
+  @Column({ type: 'varchar', default: '' })
   image: string;
 
-  @Column()
+  @Column({ type: 'varchar', default: '' })
   cover: string;
 
-  @Column()
+  @Column({ type: 'varchar', default: '' })
   title: string;
 
-  @Column('varchar')
+  @Column({ type: 'varchar', default: '' })
   about: string;
 
-  @Column('varchar')
+  @Column({ type: 'varchar', default: '' })
   description: string;
 
   @OneToMany(() => Schedule, (schedule) => schedule.film)

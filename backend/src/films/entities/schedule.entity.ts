@@ -25,11 +25,11 @@ export class Schedule {
   @Column('int')
   seats: number;
 
-  @Column('double precision')
+  @Column('int')
   price: number;
 
-  @Column('text')
-  taken: string;
+  @Column('varchar', { array: true, default: [] })
+  taken: string[];
 
   @Column({ name: 'filmId', type: 'uuid' })
   filmId: string;

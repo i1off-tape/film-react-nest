@@ -1,8 +1,5 @@
-import {
-  Injectable,
-  BadRequestException,
-  ConflictException,
-} from '@nestjs/common';
+import { RepositoryErrorCode, RepositoryError } from './repository.errors';
+import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
 import { Film } from '../films/entities/film.entity';
@@ -64,20 +61,25 @@ export class AppRepository implements IFilmsRepository {
           lock: { mode: 'pessimistic_write' },
         });
         if (!schedule) {
-          throw new ConflictException('Сессия не существует');
+          throw new RepositoryError(
+            RepositoryErrorCode.SessionNotFound,
+            'Сессия не существует',
+          );
         }
 
-        const taken = schedule.taken ? schedule.taken.split(',') : [];
-
         const alreadyTaken = group.places.some((place) =>
-          taken.includes(place),
+          schedule.taken.includes(place),
         );
 
         if (alreadyTaken) {
-          throw new ConflictException('Одно или несколько мест уже заняты');
+          throw new RepositoryError(
+            RepositoryErrorCode.SeatAlreadyTaken,
+            'Одно или несколько мест уже заняты',
+          );
         }
 
-        schedule.taken = [...taken, ...group.places].join(',');
+        schedule.taken = [...schedule.taken, ...group.places];
+
         await queryRunner.manager.save(schedule);
       }
       await queryRunner.commitTransaction();
@@ -109,7 +111,10 @@ export class AppRepository implements IFilmsRepository {
       }
 
       if (group.places.includes(place)) {
-        throw new BadRequestException('Дубликат мест в заказе');
+        throw new RepositoryError(
+          RepositoryErrorCode.DuplicateSeatInOrder,
+          'Дубликат мест в заказе',
+        );
       }
 
       group.places.push(place);

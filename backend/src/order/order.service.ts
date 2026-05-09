@@ -1,4 +1,12 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  ConflictException,
+} from '@nestjs/common';
+import {
+  RepositoryErrorCode,
+  RepositoryError,
+} from '../repository/repository.errors';
 import { CreateOrderDto, OrderResponseDto, TicketDto } from './dto/order.dto';
 import { AppRepository } from '../repository/app.repository';
 
@@ -9,12 +17,30 @@ export class OrderService {
   async create(order: CreateOrderDto): Promise<OrderResponseDto> {
     this.validateOrder(order);
 
-    await this.filmsRepository.reserveTickets(order.tickets);
+    try {
+      await this.filmsRepository.reserveTickets(order.tickets);
+    } catch (error) {
+      this.handleRepositoryError(error);
+    }
 
     return {
       total: order.tickets.length,
       items: order.tickets,
     };
+  }
+
+  private handleRepositoryError(error: unknown): never {
+    if (!(error instanceof RepositoryError)) {
+      throw error;
+    }
+    switch (error.code) {
+      case RepositoryErrorCode.DuplicateSeatInOrder:
+      case RepositoryErrorCode.SeatOutOfRange:
+        throw new BadRequestException(error.message);
+      case RepositoryErrorCode.SessionNotFound:
+      case RepositoryErrorCode.SeatAlreadyTaken:
+        throw new ConflictException(error.message);
+    }
   }
 
   private validateOrder(order: CreateOrderDto): void {

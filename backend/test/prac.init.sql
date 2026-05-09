@@ -5,9 +5,9 @@ create table public.films
     id          uuid default uuid_generate_v4() not null
         constraint "PK_697487ada088902377482c970d1"
             primary key,
-    rating      double precision                not null,
+    rating      real               not null,
     director    varchar                         not null,
-    tags        text                            not null,
+    tags        varchar[] default'{}'              not null,
     image       varchar                         not null,
     cover       varchar                         not null,
     title       varchar                         not null,
@@ -27,8 +27,8 @@ create table public.schedules
     hall     integer                         not null,
     rows     integer                         not null,
     seats    integer                         not null,
-    price    double precision                not null,
-    taken    text                            not null,
+    price    integer                         not null,
+    taken    varchar[] default'{}'              not null,
     "filmId" uuid
         constraint "FK_1c2f5e637713a429f4854024a76"
             references public.films
