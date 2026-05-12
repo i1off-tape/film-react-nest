@@ -3,8 +3,8 @@ name: Test and Build Images
 on:
   push:
     branches:
-      - '**'
-    tags:
+      - 'main'
+    tags-ignore:
       - '**'
   workflow_dispatch:
 
