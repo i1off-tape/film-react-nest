@@ -1,0 +1,15 @@
+node_modules
+dist
+.env
+.env.*
+!.env.example
+.git
+.gitignore
+.vscode
+.idea
+.storybook
+.template
+storybook-static
+bin
+*.md
+*.log
