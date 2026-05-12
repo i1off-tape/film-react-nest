@@ -20,12 +20,14 @@ services:
       - backend-tier
 
   frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+        VITE_CDN_URL: ${VITE_CDN_URL}
     image: ghcr.io/${OWNER}/film-react-nest-frontend:latest
     container_name: film-frontend
     restart: unless-stopped
-    args:
-      VITE_API_URL: ${VITE_API_URL}
-      VITE_CDN_URL: ${VITE_CDN_URL}
     depends_on:
       - backend
     networks:
